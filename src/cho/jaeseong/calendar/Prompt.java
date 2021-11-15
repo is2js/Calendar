@@ -13,6 +13,8 @@ public class Prompt {
 	// 6. 메인메소드 내용 통째로 메서드로 선언해주자. 
 	// - 아직까지.. 메소드들은 싹다 public을 붙인다???? static에서 사용하려면 static도 붙여야하지 않나???
 	// -> static을 붙혔다면.. 메인로직이 옮겨가면. static이 필요가 없어진다??? 아니면 클래스.메서드로 호출해도 될 것 같긴한데 객체.메서드()호출로 메인용 static메서드를 없애보자.
+	// my) static메소드는 객체없이 편하게  외부) 클래스.메소드() 내부) (main메소드처럼) 메소드()로 편하게 호출하는 장점이 있었다.
+	// my) 하지만, 리팩토링을 통해 메인로직이 옮겨가면? 더이상.. 내부가 내부가 아니므로.. 편하게 호출안되니, 객체생성호출로 가보자.
 	public void runPrompt() { 
 		// Calendar클래스도.. public class라 편하게.. 어디서든 불러서 사용할 수 있다.
 		Scanner scanner = new Scanner(System.in);
