@@ -52,6 +52,11 @@ public class Calendar {
 			if (month == -1)  {
 				break;
 			} // 1줄이라도  {} 중괄호를 쓰자.
+			// 8. 외부에서 받는 값이면 1)종료 필터링 이후-> 2)범위(혹은 index)검사 - continue 반드시 하자. 
+			if (!(1<= month && month <= 12)) {
+				System.out.println("1~12사이의 값을 입력하세요.");
+				continue;
+			}
 			System.out.printf("%d월은 %d일 까지 있습니다.\n", month, cal.getMaxDaysOfMonth(month));
 		}
 		System.out.println("Bye~!");
