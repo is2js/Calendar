@@ -3,6 +3,7 @@ package cho.jaeseong.calendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 /*
 요구 사항
@@ -41,29 +42,40 @@ Bye
 public class Calendar {
 	private static final int[] MAX_DAYS = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	private static final int[] LEAP_MAX_DAYS = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	
+	//1. 검색 및 저장을 위해 HashMap을 쓴다. 밖에서 접근하면 안되니, private로 선언한다.
+	// - 앞에는(key로서) Date가 들어가고, 뒤에는 plan으 Stringㅇ 들어가도록 <제네,릭>으로 자료형을 준다.
+	// ***dictionary = {} python과 다르게 ***[객체가 생성되는 순간인 생성자 호출]시*** HashMap을 초기화 해준다.
+	private HashMap<Date, String> planMap;
 
-	//1. Prompt의 "1" 입력 -> cmdRegister(); ->로 넘어왔을 때, 사용자에게 "strDate"와 "plan"을 입력받을 것이다. **string date는 strDate로 미리 받아두는 sense**
-	// 이 때, [[[ scanner로 받은 "strDate"와 "plan"을 등록시켜줄 메소드]]] 의 선언부를 짠다.
-	// - 1) 문자열 date와 문자열  plan 2가지를 파라미터로 받는다고 가정한다. -> *date의 string양식을 문서주석으로 ex: "2017-06-20"같은 예시를 달아준다.
-	// -> 선언부를 작성하고 문서주석 /**{enter}치면, 파라미터도 다 자동으로 작성되어있다!!
+	//2. 이때까지 생성자가 없어서 default생성자를 컴팡ㄹ러한테 받았을 것ㅇ다.
+	// -> **객체 생성마다 서로다른 hashMap을 가지도록** **HashMap을 초기화**해주는 생성자를 작성한다.
+	public Calendar() {
+		planMap = new HashMap<Date, String>();
+	}
+	
 	/**
 	 * 
 	 * @param strDate ex: "2017-06-20"
 	 * @param plan
 	 * @throws ParseException 
 	 */
-	//public void registerPlan(String date, String plan) {
-	//4. ctrl+1 -> [ Add throws ]의 결과 -> 문서주석에도 자동 추가된다.
 	public void registerPlan(String strDate, String plan) throws ParseException {
-		// 2. string-> date로 변환시키기 위해 Date모듈을 가져올 건데, 단축키는 [c+s+m]이다.
-		// -> new SimpleDateFormat("미리 날짜포맷") -> .parse("해당포맷 문자열") -> Date형으로 변환시킨다.
-		
-		// 3. new SimpleDateFormat~에서 exception에러가 뜬다면, 1) 메서드선언부에 Add throws  or 2) try catch 묵어주기가 [ctrl+1]로 안내되는데
-		//-> 여기선 씸플하게 throws를 적용해보자. -> [[ 메소드 내부try/catch처리하는ㄱ ㅔ 아니라 메소드를 호출하는 부분에서 처리한다 ]]는 뜻이다.
 		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
-		// 4. 찍히는지 한번 보기  ->  **여기class의 Main함수**에서 확인하기
-		System.out.println(date); 
+		System.out.println(date);
 		
+		//3. 이제 input으로 들어올 strDate-> date와 plan을  hashmap에 입력하자.
+		planMap.put(date, plan);
+	}
+	
+	//4. 저장후, private한 planMap검색(plan이 반환될?)을 해주는 메소드를 만들자.
+	// -> 검색은 strDate를 입력하면, -> date로 변환 -> map에서 찾기 -> plan을 반환시켜줘야한다.
+	public String searchPlan(String strDate) throws ParseException {
+		//return ""; //에러방지용으로 먼저 선언해두고 구현부 작성해주기.
+		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+		// map 은 .get(key)로서 key가 string아니어도 바로 뽑아낸다.
+		String plan = planMap.get(date);
+		return plan; // 5. 프롬프트에서 등록 및 검색반환받아보기.
 	}
 	
 	public boolean isLeapYear(int year) {
@@ -76,9 +88,9 @@ public class Calendar {
 	public int getMaxDaysOfMonth(int year, int month) {
 		if (isLeapYear(year)) {
 
-			return LEAP_MAX_DAYS[month]; // 13.
+			return LEAP_MAX_DAYS[month]; 
 		}
-		return MAX_DAYS[month]; // 13.
+		return MAX_DAYS[month]; 
 	}
 
 	public void printCalendar(int year, int month) {
@@ -124,12 +136,14 @@ public class Calendar {
 	}
 
 	public static void main(String[] args) throws ParseException {
-		//5. 작성중인 메서드가 제대로 작동하는지 테스트하기~!
-		Calendar cal = new Calendar();
-		//cal.registerPlan("2017-06-23", "Let's eat beef!");
-		//6. 메서드에서 throws해줬으면,, 호출하는서.. 해줘야한다... Add throws
+		Calendar cal = new Calendar(); // 6-5. 객체 생성마다 map이 초기화되도록 했으니, 실행시마다 비어져있을 것이다.
 		cal.registerPlan("2017-06-23", "Let's eat beef!");
-		//Fri Jun 23 00:00:00 KST 2017  -> Date객체 형식으로 찍힌다. 근데.. 너무 복잡할듯?
+		//6. 반환까지 받아보기
+		System.out.println(cal.searchPlan("2017-06-23"));
+		//7. 결과값
+		//Fri Jun 23 00:00:00 KST 2017
+		//Let's eat beef!
+
 
 	}
 
