@@ -43,13 +43,8 @@ public class Calendar {
 	private static final int[] MAX_DAYS = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	private static final int[] LEAP_MAX_DAYS = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	
-	//1. 검색 및 저장을 위해 HashMap을 쓴다. 밖에서 접근하면 안되니, private로 선언한다.
-	// - 앞에는(key로서) Date가 들어가고, 뒤에는 plan으 Stringㅇ 들어가도록 <제네,릭>으로 자료형을 준다.
-	// ***dictionary = {} python과 다르게 ***[객체가 생성되는 순간인 생성자 호출]시*** HashMap을 초기화 해준다.
 	private HashMap<Date, String> planMap;
 
-	//2. 이때까지 생성자가 없어서 default생성자를 컴팡ㄹ러한테 받았을 것ㅇ다.
-	// -> **객체 생성마다 서로다른 hashMap을 가지도록** **HashMap을 초기화**해주는 생성자를 작성한다.
 	public Calendar() {
 		planMap = new HashMap<Date, String>();
 	}
@@ -62,20 +57,15 @@ public class Calendar {
 	 */
 	public void registerPlan(String strDate, String plan) throws ParseException {
 		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
-		System.out.println(date);
+		//System.out.println(date);
 		
-		//3. 이제 input으로 들어올 strDate-> date와 plan을  hashmap에 입력하자.
-		planMap.put(date, plan);
+		this.planMap.put(date, plan);
 	}
 	
-	//4. 저장후, private한 planMap검색(plan이 반환될?)을 해주는 메소드를 만들자.
-	// -> 검색은 strDate를 입력하면, -> date로 변환 -> map에서 찾기 -> plan을 반환시켜줘야한다.
 	public String searchPlan(String strDate) throws ParseException {
-		//return ""; //에러방지용으로 먼저 선언해두고 구현부 작성해주기.
 		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
-		// map 은 .get(key)로서 key가 string아니어도 바로 뽑아낸다.
-		String plan = planMap.get(date);
-		return plan; // 5. 프롬프트에서 등록 및 검색반환받아보기.
+		String plan = this.planMap.get(date);
+		return plan; 
 	}
 	
 	public boolean isLeapYear(int year) {
@@ -136,13 +126,9 @@ public class Calendar {
 	}
 
 	public static void main(String[] args) throws ParseException {
-		Calendar cal = new Calendar(); // 6-5. 객체 생성마다 map이 초기화되도록 했으니, 실행시마다 비어져있을 것이다.
+		Calendar cal = new Calendar(); 
 		cal.registerPlan("2017-06-23", "Let's eat beef!");
-		//6. 반환까지 받아보기
 		System.out.println(cal.searchPlan("2017-06-23"));
-		//7. 결과값
-		//Fri Jun 23 00:00:00 KST 2017
-		//Let's eat beef!
 
 
 	}
