@@ -14,12 +14,6 @@ public class Prompt {
 		System.out.println("+----------------------+");
 	}
 	
-
-	/*
-	 * Plan class: 전 단계에서 구현한 내용을 클래스를 사용해서 다시 구현한다.
-	 * PlanItem 클래스를 만든다. -> refactor다.
-	 */
-
 	/**
 	 * 
 	 * @param week 요일명
@@ -100,14 +94,31 @@ public class Prompt {
 		System.out.println("[일정 검색]");
 		System.out.println("날짜를 입력해 주세요(yyyy-MM-dd).");
 		String date = scanner.next();
-		String plan = "";
-		try {
-			plan = cal.searchPlan(date);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			System.err.println("일정 검색 중 오류가 발생했습니다.");
+		//2. 이제 받아오는 것은 plan 문자열이 아니라 PlanItem객체라서..바꿔준다. 
+		//String plan = "";
+		PlanItem plan;
+		
+		
+		//1. searchPlan은 이제, string  plan이 아니라.. PlanItem객체를 -> Prompt로 반환하도록 바꼈다.
+		//   여러데이터를 담고 있으므로 반환을 통채로 일단 해주긴 해줘야하므로.
+		//   try-catch도 내부에 처리되고 없으면 default null이 반환되도록 해놨다. -> try-catch문 없애준다.
+//		try {
+//			plan = cal.searchPlan(date);
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//			System.err.println("일정 검색 중 오류가 발생했습니다.");
+//		}
+		
+		//3. 원래 map이 아니라면,, null을 반환받았을 때를 대비해줘야하지만, HashMap.get()으로 꺼내므로 자동으로 null반환이 된다.
+		//plan = cal.searchPlan(date);
+		plan = cal.searchPlan(date);
+		//4. 문자열이 아닌 **객체를 찍을 때는, 반드시 [받아온 객체는  null이 아닐때만 찍을 수 있게] 검사를 한번 한다.
+		//System.out.println(plan);
+		if (plan != null) {
+			System.out.println(plan.plan);
+		} else {
+			System.out.println("일정이 없습니다.");
 		}
-		System.out.println(plan);
 
 	}
 
@@ -115,12 +126,26 @@ public class Prompt {
 		System.out.println("[새 일정 등록] ");
 		System.out.println("날짜를 입력해 주세요(yyyy-MM-dd).");
 		String date = scanner.next();
-		System.out.println("일정을 입력해주세요");
-		String text = "";
-		scanner.nextLine(); 
-		text = scanner.nextLine();
+		//5. 단위단위로 받도록 다시 수정.. 콘솔이 깨지기고 한다고함.
+//		System.out.println("일정을 입력해주세요");
+//		String text = "";
+//		scanner.nextLine(); // ignore 1 line 
+//		text= scanner.nextLine();
 		
-
+		String text = "";
+		System.out.println("일정을 입력해 주세요.(끝문자=;)");
+		String word;
+		// word의 끝이 ";"가 아닐때까지 무한루프 + @while조건문안에서도 scanner가 작동하여 초기값을 넣어줄 수 있다.@ + 할당받은 word = 에 괄호를 치면 바로 사용할 수 있다.
+		// -> word는 초기화를 scanner를 사용 + while문의 조건부에서 초기화 && if검사를 동시에
+		while (!(word = scanner.next()).endsWith(";")) {
+			// 끝단어가 아니라면 빈문자열  text에다가 공백과 함께 더하기
+			// **끝만 ;세미콜론으로 알려주기! -> 루프에서 endsWith("끝알림 문자")로 검사하기!**
+			text += word + " ";
+		}
+		// 6. 마지막 단어상태로 빠져나왔으므로, 한번 더 더해줘야한다. -> 끝알림 문자 삭제하고 넣어주자.
+		word = word.replace(";", "");
+		text += word;
+		
 		cal.registerPlan(date, text); 
 
 	}
